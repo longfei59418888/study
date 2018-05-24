@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>flowchart.js · Playground</title>
+    <style type="text/css">
+        .end-element {
+            background-color: #FFCCFF;
+        }
+    </style>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/webfont.js"></script>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/snap.svg-min.js"></script>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/underscore-min.js"></script>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/sequence-diagram-snap-min.js"></script>
+</head>
+<div id="diagram"></div>
+<script>
+    var data = ''
+    data += ob('发送页面请求');
+    data += bts('请求页面')
+    data += os('处理请求')
+    data += os('有缓存页面,返回code=304')
+    data += os('没有缓存页面,返回code=200')
+    data += stb('返回code和页面')
+    Diagram.parse(data).drawSVG('diagram', {theme: 'simple'});
+
+
+    function bts(msg) {return "browser->service:"+msg+'\n';}
+    function stb(msg) {return "service->browser:"+msg+'\n';}
+    function ob(msg) {return "Note over browser:"+msg+'\n';}
+    function os(msg) {return "Note over service:"+msg+'\n';}
+</script>
+
+</body>
+</html>

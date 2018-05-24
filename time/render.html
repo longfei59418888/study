@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>flowchart.js · Playground</title>
+    <style type="text/css">
+        .end-element { background-color : #FFCCFF; }
+    </style>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.0/raphael-min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://flowchart.js.org/flowchart-latest.js"></script>
+    <!-- <script src="../release/flowchart.min.js"></script> -->
+    <script>
+
+        window.onload = function () {
+            var btn = document.getElementById("run"),
+                cd = document.getElementById("code"),
+                chart;
+
+            (btn.onclick = function () {
+                var code = cd.value;
+
+                if (chart) {
+                    chart.clean();
+                }
+
+                chart = flowchart.parse(code);
+                chart.drawSVG('canvas', {
+                    // 'x': 30,
+                    // 'y': 50,
+                    'line-width': 3,
+                    'maxWidth': 3,//ensures the flowcharts fits within a certian width
+                    'line-length': 20,
+                    'text-margin': 0,
+                    'font-size': 12,
+                    'font': 'normal',
+                    'font-family': 'Helvetica',
+                    'font-weight': 'normal',
+                    'font-color': 'black',
+                    'line-color': 'black',
+                    'element-color': 'black',
+                    'fill': 'white',
+                    'yes-text': 'yes',
+                    'no-text': 'no',
+                    'arrow-end': 'block',
+                    'scale': 1,
+                    'symbols': {
+                        'start': {
+                            'font-color': 'red',
+                            'element-color': 'green',
+                            'fill': 'yellow'
+                        },
+                        'end':{
+                            'class': 'end-element'
+                        }
+                    },
+                    'flowstate' : {
+                        'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                        'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                        'future' : { 'fill' : '#FFFF99'},
+                        'request' : { 'fill' : 'blue'},
+                        'invalid': {'fill' : '#444444'},
+                        'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                        'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                    }
+                });
+
+                $('[id^=sub1]').click(function(){
+                    alert('info here');
+                });
+            })();
+
+        };
+    </script>
+</head>
+<body>
+<div id="canvas"></div>
+<div><textarea id="code" style="width: 100%;" rows="11">
+st=>start: 开始渲染
+e=>end: 渲染完成
+jxdom=>operation: 浏览器得到html,并且解析
+jx=>operation: 自上而下解析dom 加载资源，下载，执行
+jxnode=>condition: 当前dom是否是script标签?
+jxonode=>operation: 阻塞dom树解析 下载js代码 等待执行，操作某一个node
+jxjs=>condition: 操作的node的CSSOM和DOM树 render树是否构建完成
+domzxwc=>operation: 执行js，操作node
+domzxwcs=>condition: 等到操作的该node CSSOM和DOM树、render树构建完成
+
+
+jxjxend=>operation: 是否是script标签？否，继续解析直到完成
+st(right)->jxdom->jx->jxnode
+jxnode(yes)->jxonode->jxjs
+jxjs(yes)->domzxwc
+jxjs(no)->domzxwcs
+jxnode(no,right)->jxjxend
+domzxwcs(no)->e
+domzxwcs(yes)->jxonode
+
+
+
+
+</textarea></div>
+<div><button id="run" type="button">Run</button></div>
+<!--jxonode=>operation: 下载js代码，等待代码，操作某一个node-->
+<!--jxjs=>condition: 操作的node的CSSOM和DOM树是否构建完成-->
+<!--jxjs=>condition: 是否含有 async , defer 属性-->
+<!--jsjsy=>operation: async异步加载js,所有执行完成之后执行js代码-->
+</body>
+</html>

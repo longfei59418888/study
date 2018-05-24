@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>flowchart.js · Playground</title>
+    <style type="text/css">
+        .end-element {
+            background-color: #FFCCFF;
+        }
+    </style>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/webfont.js"></script>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/snap.svg-min.js"></script>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/underscore-min.js"></script>
+    <script src="https://bramp.github.io/js-sequence-diagrams/js/sequence-diagram-snap-min.js"></script>
+</head>
+<div id="diagram"></div>
+<script>
+    var data = ''
+    data += ob('发送连接请求');
+    data += btc('SYN=1，seq=client_isn');
+    data += oc('读取浏览器缓存/系统缓存');
+    data += oc('有当前url缓存','right');
+    data += end();
+    Diagram.parse(data).drawSVG('diagram', {theme: 'simple'});
+
+
+    function bts(msg) {return "browser->service:"+msg+'\n';}
+    function btc(msg) {return "browser->cache:"+msg+'\n';}
+    function stb(msg) {return "cache->browser:"+msg+'\n';}
+    function ctb(msg) {return "service->browser:"+msg+'\n';}
+    function end() {return "browser->DOM: 渲染页面\n";}
+    function ob(msg) {return "Note over browser:"+msg+'\n';}
+    function oc(msg,type) {
+        if(!type)return "Note over cache:"+msg+'\n';
+        else return "Note "+type+" of cache:"+msg+'\n';
+    }
+</script>
+
+</body>
+</html>
