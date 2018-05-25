@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>flowchart.js · Playground</title>
+        <style type="text/css">
+          .end-element { background-color : #FFCCFF; }
+        </style>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.0/raphael-min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="http://flowchart.js.org/flowchart-latest.js"></script>
+        <!-- <script src="../release/flowchart.min.js"></script> -->
+        <script>
+
+            window.onload = function () {
+                var btn = document.getElementById("run"),
+                    cd = document.getElementById("code"),
+                    chart;
+
+                (btn.onclick = function () {
+                    var code = cd.value;
+
+                    if (chart) {
+                      chart.clean();
+                    }
+
+                    chart = flowchart.parse(code);
+                    chart.drawSVG('canvas', {
+                      // 'x': 30,
+                      // 'y': 50,
+                      'line-width': 3,
+                      'maxWidth': 3,//ensures the flowcharts fits within a certian width
+                      'line-length': 30,
+                      'text-margin': 0,
+                      'font-size': 12,
+                      'font': 'normal',
+                      'font-family': 'Helvetica',
+                      'font-weight': 'normal',
+                      'font-color': 'black',
+                      'line-color': 'black',
+                      'element-color': 'black',
+                      'fill': 'white',
+                      'yes-text': 'yes',
+                      'no-text': 'no',
+                      'arrow-end': 'block',
+                      'scale': 1,
+                      'symbols': {
+                        'start': {
+                          'font-color': 'red',
+                          'element-color': 'green',
+                          'fill': 'yellow'
+                        },
+                        'end':{
+                          'class': 'end-element'
+                        }
+                      },
+                      'flowstate' : {
+                        'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                        'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                        'future' : { 'fill' : '#FFFF99'},
+                        'request' : { 'fill' : 'blue'},
+                        'invalid': {'fill' : '#444444'},
+                        'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                        'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                      }
+                    });
+
+                    $('[id^=sub1]').click(function(){
+                      alert('info here');
+                    });
+                })();
+
+            };
+        </script>
+    </head>
+    <body>
+	 <div id="canvas"></div>
+        <div><textarea id="code" style="width: 100%;" rows="11">
+st=>start: 浏览器输入URL
+e=>end: 浏览器渲染页面|past:>./render.svg
+hcym=>condition: URL是否有缓存
+(读取浏览器缓存)|past:>./cachepage.svg
+ymjx=>condition: 域名URL解析
+IP解析是否在本地缓存
+(浏览器缓存/系统缓存/路由器缓存)
+sfgq=>condition: 是否过期
+dqhc=>operation: 读取缓存获取IP
+hqhc=>operation: DNS服务器获取IP
+fwfwq=>operation: 访问对应IP服务器
+scws=>operation: (客户端/服务器)建立连接
+三次握手|past:>./scws.svg
+sjjh=>operation: 数据交互
+客户端发送请求
+服务器端处理请求|past:>./sjjh.svg
+schs=>operation: (客户端/服务器)断开连接
+四次挥手|past:>./schs.svg
+
+
+
+
+st->hcym
+hcym(no)->ymjx->hqhc->fwfwq
+hcym(yes, right)->sfgq
+sfgq(no)->e
+sfgq(yes)->fwfwq
+ymjx(no)->hqhc->fwfwq
+ymjx(yes,right)->dqhc->fwfwq
+fwfwq->scws(right)->sjjh(right)->schs(right)->e
+</textarea></div>
+        <div><button id="run" type="button">Run</button></div>
+       
+    </body>
+</html>

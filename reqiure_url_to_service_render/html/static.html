@@ -32,7 +32,7 @@
                       'maxWidth': 3,//ensures the flowcharts fits within a certian width
                       'line-length': 30,
                       'text-margin': 0,
-                      'font-size': 12,
+                      'font-size': 14,
                       'font': 'normal',
                       'font-family': 'Helvetica',
                       'font-weight': 'normal',
@@ -76,36 +76,25 @@
     <body>
 	 <div id="canvas"></div>
         <div><textarea id="code" style="width: 100%;" rows="11">
-st=>start: 浏览器输入URL
-e=>end: 浏览器渲染页面|past:>./render.svg
-hcym=>condition: URL是否有缓存
-(读取浏览器缓存)
-ymjx=>condition: 域名URL解析
-IP解析是否在本地缓存
-(浏览器缓存/系统缓存/路由器缓存)
-sfgq=>condition: 是否过期
-dqhc=>operation: 读取缓存获取IP
-hqhc=>operation: DNS服务器获取IP
-fwfwq=>operation: 访问对应IP服务器
-scws=>operation: (客户端/服务器)建立连接
-三次握手|past:>./scws.svg
-sjjh=>operation: 数据交互
-客户端发送请求
-服务器端处理请求|past:>./sjjh.svg
-schs=>operation: (客户端/服务器)断开连接
-四次挥手|past:>./schs.svg
+st=>start: 获取资源
+e=>end: 返回结果给浏览器
+op1=>operation: 1.有服务器控制是否缓存
+                2.last-modified/If-Modified-Since/etag/If-None-Match
+                3.expires/cache-control
+cont=>condition: 是否有缓存 （max-age/expires是否过期等）？
+op4=>operation: 1.内存缓存直接返回200---from-memory
+                2.本地缓存直接返回200---from-disk
+                2.服务器缓存返回304
 
 
 
 
-st->hcym
-hcym(no)->ymjx->hqhc->fwfwq
-hcym(yes, right)->sfgq
-sfgq(no)->e
-sfgq(yes)->fwfwq
-ymjx(no)->hqhc->fwfwq
-ymjx(yes,right)->dqhc->fwfwq
-fwfwq->scws(right)->sjjh(right)->schs(right)->e
+
+st(right)->op1->cont
+cont(yes)->op4->e
+cont(no)->e
+
+
 </textarea></div>
         <div><button id="run" type="button">Run</button></div>
        

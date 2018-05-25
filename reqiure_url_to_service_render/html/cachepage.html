@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>flowchart.js · Playground</title>
+        <style type="text/css">
+          .end-element { background-color : #FFCCFF; }
+        </style>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.0/raphael-min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="http://flowchart.js.org/flowchart-latest.js"></script>
+        <!-- <script src="../release/flowchart.min.js"></script> -->
+        <script>
+
+            window.onload = function () {
+                var btn = document.getElementById("run"),
+                    cd = document.getElementById("code"),
+                    chart;
+
+                (btn.onclick = function () {
+                    var code = cd.value;
+
+                    if (chart) {
+                      chart.clean();
+                    }
+
+                    chart = flowchart.parse(code);
+                    chart.drawSVG('canvas', {
+                      // 'x': 30,
+                      // 'y': 50,
+                      'line-width': 3,
+                      'maxWidth': 3,//ensures the flowcharts fits within a certian width
+                      'line-length': 30,
+                      'text-margin': 0,
+                      'font-size': 14,
+                      'font': 'normal',
+                      'font-family': 'Helvetica',
+                      'font-weight': 'normal',
+                      'font-color': 'black',
+                      'line-color': 'black',
+                      'element-color': 'black',
+                      'fill': 'white',
+                      'yes-text': 'yes',
+                      'no-text': 'no',
+                      'arrow-end': 'block',
+                      'scale': 1,
+                      'symbols': {
+                        'start': {
+                          'font-color': 'red',
+                          'element-color': 'green',
+                          'fill': 'yellow'
+                        },
+                        'end':{
+                          'class': 'end-element'
+                        }
+                      },
+                      'flowstate' : {
+                        'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                        'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                        'future' : { 'fill' : '#FFFF99'},
+                        'request' : { 'fill' : 'blue'},
+                        'invalid': {'fill' : '#444444'},
+                        'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                        'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                      }
+                    });
+
+                    $('[id^=sub1]').click(function(){
+                      alert('info here');
+                    });
+                })();
+
+            };
+        </script>
+    </head>
+    <body>
+	 <div id="canvas"></div>
+        <div><textarea id="code" style="width: 100%;" rows="11">
+st=>start: 获取缓存
+e=>end: 返回结果给浏览器
+op1=>operation: 1.浏览器控制的缓存meta 2.cache-control和expires
+op2=>operation: 1.cache-control
+                2.max-age:最大失效时间，设置了后expires失效
+                3.no-cache:并不是不缓存，而是缓存或者使用前都会验证页面有效性
+                4.no-store:不进行缓存
+                5.must-revalidate:代理服务器确认缓存有效性
+op3=>operation: 1.expires
+                2.失效时间，有max-age则失效
+cont=>condition: 是否有缓存（max-age/expires是否过期等）？
+op4=>operation: 1.检测max-age是否超过
+                2.如果没有max-age,检测expires是否过期
+
+
+
+
+
+st(right)->op1->op2->op3(right)->cont
+cont(yes)->op4->e
+cont(no)->e
+
+
+</textarea></div>
+        <div><button id="run" type="button">Run</button></div>
+       
+    </body>
+</html>

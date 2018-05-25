@@ -28,11 +28,11 @@
                 chart.drawSVG('canvas', {
                     // 'x': 30,
                     // 'y': 50,
-                    'line-width': 3,
+                    'line-width': 2,
                     'maxWidth': 3,//ensures the flowcharts fits within a certian width
                     'line-length': 20,
                     'text-margin': 0,
-                    'font-size': 12,
+                    'font-size': 14,
                     'font': 'normal',
                     'font-family': 'Helvetica',
                     'font-weight': 'normal',
@@ -77,33 +77,28 @@
 <div id="canvas"></div>
 <div><textarea id="code" style="width: 100%;" rows="11">
 st=>start: 开始渲染
-e=>end: 渲染完成
-jxdom=>operation: 浏览器得到html,并且解析
-jx=>operation: 自上而下解析dom 加载资源，下载，执行
+e=>end: 呈现当前页面
+jxdom=>operation: 1.浏览器得到html 2.自上而下解析html 3.边解析边构建dom/cssom 4.并且cssom附着dom构建render树 5.然后布局/绘制 6.接着解析下一个节点
+jx=>operation: 1.若解析到资源标签(img/video/css/js) 2.静态资源异步加载|past:>./static.svg
+jx2=>operation: 3.css文件同步加载 4.js脚本加载(默认同步，defer/async异步)
 jxnode=>condition: 当前dom是否是script标签?
-jxonode=>operation: 阻塞dom树解析 下载js代码 等待执行，操作某一个node
-jxjs=>condition: 操作的node的CSSOM和DOM树 render树是否构建完成
-domzxwc=>operation: 执行js，操作node
-domzxwcs=>condition: 等到操作的该node CSSOM和DOM树、render树构建完成
+deferasync=>condition: 是否含有defer或者async属性
+deferasyncs=>operation: 含有defer属性---异步加载js文件---等到全部解析完成执行 含有async属性--异步加载文件，同步执行文件
+jxonode=>operation: 1.停止解析/构建/布局/绘制 2.下载js代码并执行代码 3.执行完成继续解析
+jxjxend=>operation: 继续解析,构建render树，布局/绘制直到完成
 
 
-jxjxend=>operation: 是否是script标签？否，继续解析直到完成
-st(right)->jxdom->jx->jxnode
-jxnode(yes)->jxonode->jxjs
-jxjs(yes)->domzxwc
-jxjs(no)->domzxwcs
-jxnode(no,right)->jxjxend
-domzxwcs(no)->e
-domzxwcs(yes)->jxonode
-
+st(right)->jxdom(right)->jx->jx2->jxnode
+jxnode(yes)->deferasync
+jxnode(no)->jxjxend
+deferasync(no)->jxonode(right)->jxjxend
+deferasync(yes)->deferasyncs(right)->jxjxend
+jxjxend->e
 
 
 
 </textarea></div>
 <div><button id="run" type="button">Run</button></div>
-<!--jxonode=>operation: 下载js代码，等待代码，操作某一个node-->
-<!--jxjs=>condition: 操作的node的CSSOM和DOM树是否构建完成-->
-<!--jxjs=>condition: 是否含有 async , defer 属性-->
-<!--jsjsy=>operation: async异步加载js,所有执行完成之后执行js代码-->
+
 </body>
 </html>
