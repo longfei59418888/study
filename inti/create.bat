@@ -1,0 +1,1 @@
+netsh wlan set hostednetwork mode=allow ssid=4Gtest key=12345678
